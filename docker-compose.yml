@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: prayer-times-backend
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - prayer-net
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    container_name: prayer-times-frontend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - prayer-net
+
+networks:
+  prayer-net:
+    driver: bridge

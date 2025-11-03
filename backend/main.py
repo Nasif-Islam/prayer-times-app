@@ -1,41 +1,54 @@
 # Import the required libraries - for web app creation and for JSON responses
-
 from flask import Flask, jsonify
 from flask_cors import CORS
 import requests  # Used to make HTTP requests to external APIs
 
 # Initialize the Flask application
 app = Flask(__name__)
+# Allows cross-origin requests (for React frontend)
 CORS(app)
 
 
-# This is the root route of the application
-# When you visit the base URL ("/"), it will return a simple message confirming the app is running.
+# Root route of the application
 @app.route("/")
 def home():
+    """Health check route"""
     return "Prayer Times App is live!"
 
 
-# This route takes two URL parameters: city and country
-# It fetches prayer times for the given location from the AlAdhan API
+# Route to fetch prayer times for a specific city and country
 @app.route("/prayer-times/<city>/<country>")
 def prayer_times(city, country):
-    # Construct the API URL dynamically using the city and country provided by the user
-    url = f"http://api.aladhan.com/v1/timingsByCity?city={city}&country={country}&method=2"
+    # Clean input
+    city = city.strip()
+    country = country.strip()
+    if not city or not country:
+        return jsonify({"error": "City and country are required"}), 400
 
-    # Send a GET request to the AlAdhan API
-    response = requests.get(url)
+    # Build request
+    url = "http://api.aladhan.com/v1/timingsByCity"
+    params = {"city": city, "country": country, "method": 2}
 
-    if response.status_code == 200:  # Successful response
-        return jsonify(
-            response.json()
-        )  # Convert the API response to JSON and send it to the user
-    else:
-        # If the API request fails, return an error message and HTTP status code is 500
-        return jsonify({"error": "Unable to fetch prayer times"}), 500
+    try:
+        response = requests.get(url, params=params, timeout=5)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": "Failed to contact AlAdhan API", "detail": str(e)}), 502
+
+    payload = response.json()
+    data = payload.get("data") or {}
+
+    return jsonify({
+        "status": "success",
+        "city": city,
+        "country": country,
+        "data": {
+            "date": data.get("date", {}).get("readable"),
+            "timings": data.get("timings", {})
+        }
+    })
 
 
-# This block ensures the app runs only if this file is executed directly
-# It runs the Flask app on host '0.0.0.0' (accessible from any network interface) and port 8000 (changeable if needed).
 if __name__ == "__main__":
+    # Run the Flask app locally
     app.run(host="0.0.0.0", port=8000)

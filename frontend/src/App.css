@@ -1,63 +1,133 @@
-body {
-  font-family: "Inter", "Arial", sans-serif;
-  background-color: #f4f6fa;
-  margin: 0;
-  padding: 0;
+/* === THEME VARIABLES === */
+:root {
+  --bg-color: #f4f6fa;
+  --text-color: #333;
+  --card-bg: #ffffff;
+  --primary: #2b5a9e;
+  --primary-dark: #244c88;
+  --border-color: #ccc;
+  --shadow-color: rgba(0, 0, 0, 0.08);
 }
 
+.dark-mode {
+  --bg-color: #1e1e2f;
+  --text-color: #f0f0f0;
+  --card-bg: #2a2a3b;
+  --primary: #4e8ef7;
+  --primary-dark: #3c6ed8;
+  --border-color: #444;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* === GLOBAL STYLES === */
+body {
+  font-family: "Inter", "Arial", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* === MAIN CONTAINER === */
 .app-container {
   max-width: 600px;
   margin: 60px auto;
-  background-color: #fff;
+  background-color: var(--card-bg);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px var(--shadow-color);
   padding: 40px;
   text-align: center;
+  position: relative;
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
 }
 
+/* === TITLE === */
 h1 {
-  color: #2b5a9e;
-  margin-bottom: 20px;
+  color: var(--primary);
+  margin-bottom: 24px;
 }
 
+/* === INPUTS === */
 input {
   width: 40%;
   padding: 10px;
   margin: 5px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   font-size: 16px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  transition: border 0.3s ease;
 }
 
+input:focus {
+  outline: none;
+  border: 1px solid var(--primary);
+}
+
+/* === BUTTONS === */
 button {
-  background-color: #2b5a9e;
-  color: white;
+  background-color: var(--primary);
+  color: #ffffff;
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
   margin-top: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-  background-color: #244c88;
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
+/* === THEME TOGGLE BUTTON === */
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+/* === LOADING STATE === */
+.loading {
+  color: var(--primary);
+  font-weight: 500;
+  margin-top: 20px;
+}
+
+/* === ERROR MESSAGES === */
 .error {
   color: red;
   margin-top: 15px;
+  font-weight: 500;
 }
 
+/* === RESULTS === */
 .results {
   margin-top: 30px;
   text-align: left;
 }
 
 .results h2 {
-  color: #333;
+  color: var(--text-color);
   font-size: 20px;
-  border-bottom: 2px solid #2b5a9e;
+  border-bottom: 2px solid var(--primary);
   display: inline-block;
   padding-bottom: 4px;
   margin-bottom: 16px;
@@ -70,10 +140,31 @@ button:hover {
 
 .results li {
   padding: 8px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
   font-size: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.results li:hover {
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .results li strong {
-  color: #2b5a9e;
+  color: var(--primary);
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 600px) {
+  input {
+    width: 80%;
+    margin: 8px 0;
+  }
+
+  .app-container {
+    padding: 24px;
+  }
+
+  button {
+    width: 85%;
+  }
 }
